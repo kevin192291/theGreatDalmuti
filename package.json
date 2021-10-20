@@ -1,0 +1,16 @@
+{
+  "name": "thegreatdalmuti",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx tsc index.ts",
+    "watch": "npx tsc -w"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.4.4"
+  }
+}
