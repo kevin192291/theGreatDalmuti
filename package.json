@@ -6,11 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc index.ts",
-    "watch": "npx tsc -w"
+    "watch": "npx tsc -w",
+    "prestart": "npm run build",
+    "start": "node ."
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "typescript": "^4.4.4"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^4.3.1"
   }
 }

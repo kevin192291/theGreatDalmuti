@@ -1,5 +1,18 @@
-const world = 'world';
+const app = require('express')();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+const port = process.env.PORT || 3000;
 
-export function hello(world: string = 'world'): string {
-  return `Hello ${world}! `;
-}
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/static/index.html');
+});
+
+io.on('connection', (socket) => {
+  socket.on('chat message', msg => {
+    io.emit('chat message', msg);
+  });
+});
+
+http.listen(port, () => {
+  console.log(`Socket.IO server running at http://localhost:${port}/`);
+});
