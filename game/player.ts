@@ -7,4 +7,8 @@ export class Player {
     constructor() {
         this.cards = [];
     }
+
+    public addCard(card: Card) {
+        this.cards.push(card);
+    }
 }
