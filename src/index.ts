@@ -1,13 +1,14 @@
 const app = require('express')();
 const http = require('http').Server(app);
+import { Socket } from 'socket.io';
 const io = require('socket.io')(http);
-const port = process.env.PORT || 3000;
+const port = 3000;
 
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: any) => {
   res.sendFile(__dirname + '/static/index.html');
 });
 
-io.on('connection', (socket) => {
+io.on('connection', (socket: Socket) => {
   socket.on('chat message', msg => {
     io.emit('chat message', msg);
   });
