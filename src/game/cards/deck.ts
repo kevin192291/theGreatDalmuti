@@ -3,8 +3,8 @@ import { Card } from './card';
 export class Deck {
     private cards: Card[] = [];
 
-    constructor(cards: Card[]) {
-        this.cards = cards;
+    constructor() {
+        
     }
 
     public shuffle() {

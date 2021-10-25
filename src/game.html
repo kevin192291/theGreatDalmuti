@@ -1,0 +1,51 @@
+<!-- ./client/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Document</title>
+</head>
+
+<body>
+  <div>
+    <button onClick="HostGame()">Host Game</button>
+  </div>
+
+  <div>
+    <input type="text" id="gameId">
+    <button onClick="JoinGame()">Join Game</button>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    var active_game_id = null;
+    
+    const socket = io("http://localhost:3001");
+    socket.on("message", function (message) {
+      console.log(message);
+    });
+
+    function HostGame() {
+      socket.emit("message", {
+        action: 1,
+        payload: {
+          id: 'kevin'
+        }
+      });
+    }
+    
+    function JoinGame() {
+      socket.emit("message", {
+        action: 2,
+        payload: {
+          id: document.getElementById("gameId").value
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>
