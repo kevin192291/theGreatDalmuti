@@ -51,4 +51,8 @@ export class Game {
     }
     return null;
   }
+
+  public getAllPlayers() {
+    return this.players;
+  }
 }

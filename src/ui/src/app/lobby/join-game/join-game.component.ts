@@ -40,7 +40,7 @@ export class JoinGameComponent implements OnInit {
       this.joinGameResponse().subscribe((data: any) => {
         if (data.status === 'success') {
           console.log('Game Joined Successfully');
-          this.router.navigate(['lobby/waiting-room', data.gameId]);
+          this.router.navigate(['lobby/waiting-room', data.gameId], { queryParams: { numberOfPlayers: data.numberOfPlayers } });
         }
       });
       this.socket.emit('joinGame', this.gameJoinForm.value);

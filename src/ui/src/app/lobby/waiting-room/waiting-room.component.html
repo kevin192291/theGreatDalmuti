@@ -11,4 +11,6 @@
 </p>
 <h2>Good Luck<i>!</i></h2>
 <hr>
-<h2>Players that have Joined: {{ numberOfPlayers }}</h2>
+<h2>Players that have Joined: {{ numberOfPlayers }} {{ numberOfPlayers === 1 ? '(you)' : '' }}</h2>
+
+<button (click)="startGame()" [disabled]="numberOfPlayers <= 2 || gameId === ''">Start Game</button>

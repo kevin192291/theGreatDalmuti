@@ -40,16 +40,16 @@ io.on("connection", (socket: socketio.Socket) => {
     console.log(message);
     console.log(io);
 
-    if (active_games.filter(games => games.getPlayerById(socket.client['id']) !== null).length > 0) {
-      console.log(`User: "${socket.client['id']}" is already part of a game`);
-      io.to(socket.client['id']).emit('createGame', {
+    if (active_games.filter(games => games.getPlayerById(socket.id) !== null).length > 0) {
+      console.log(`User: "${socket.id}" is already part of a game`);
+      io.to(socket.id).emit('createGame', {
         status: 'error',
         error: "You are already in a game.",
-        gameId: active_games.filter(games => games.getPlayerById(socket.client['id']) !== null)[0].getGameId(),
+        gameId: active_games.filter(games => games.getPlayerById(socket.id) !== null)[0].getGameId(),
       });
       return;
     } else {
-      const game = new Game([new Player(socket.client['id'], message.userName)], new Deck());
+      const game = new Game([new Player(socket.id, message.userName)], new Deck());
       active_games.push(game);
       socket.join(game.getGameId());
 
@@ -66,20 +66,45 @@ io.on("connection", (socket: socketio.Socket) => {
   socket.on("joinGame", (message: any) => {
     const game: Game = active_games.filter(game => game.getGameId() === message.gameId)[0];
     if (game === undefined) {
-      console.log(`User: "${socket.client['id']}" tried to join a game that does not exist`);
-      io.to(socket.client['id']).emit('joinGame', {
+      console.log(`User: "${socket.id}" tried to join a game that does not exist`);
+      io.to(socket.id).emit('joinGame', {
         status: 'error',
         error: "You are already in a game.",
         gameId: null,
       });
     } else {
       socket.join(game.getGameId());
-      game.addPlayer(new Player(socket.client['id'], message.userName));
+      game.addPlayer(new Player(socket.id, message.userName));
       io.to(game.getGameId()).emit('joinGame', {
         status: 'success',
         userName: message.userName,
         gameId: game.getGameId(),
         numberOfPlayers: io.sockets.adapter.rooms.get(game.getGameId()).size,
+      });
+    }
+  });
+
+  socket.on("startGame", (message: any) => {
+    const game: Game = active_games.filter(game => game.getGameId() === message.gameId)[0];
+    if (game === undefined) {
+      console.log(`User: "${socket.client['id']}" tried to start a game that does not exist`);
+      io.to(socket.client['id']).emit('startGame', {
+        status: 'error',
+        error: "Your game wasn't found!",
+        gameId: null,
+      });
+    } else {
+      game.getAllPlayers().forEach((player: Player) => {
+        const playerSocket = io.sockets.sockets.get(player.id);
+        if (playerSocket) {
+          playerSocket.client['sockets'].get(player.id).emit('startGame', {
+            status: 'success',
+            gameId: game.getGameId(),
+            userName: player.userName,
+          });
+        } else {
+          console.log(`User: "${player.id}" is not connected to the server`);
+        }
       });
     }
   });

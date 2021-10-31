@@ -12,7 +12,7 @@ import { ToastrService } from 'ngx-toastr';
 export class WaitingRoomComponent implements OnInit {
 
   public gameId: string = '';
-  public numberOfPlayers: number = 0;
+  public numberOfPlayers: number = 1;
 
   constructor(
     private socket: Socket,
@@ -25,10 +25,10 @@ export class WaitingRoomComponent implements OnInit {
     //   console.log('params', params);
     //   this.gameId = params.gameId;
     // }));
-    // this.route.queryParams.pipe(map(params => {
-    //   console.log('query params', params);
-    //   this.gameId = params.gameId;
-    // }));
+    this.route.queryParams.pipe(map(params => {
+      console.log('query params', params);
+      this.numberOfPlayers = params.numberOfPlayers;
+    }));
 
     this.joinGameResponse().subscribe(data => {
       if (data.status === 'success') {
@@ -37,15 +37,36 @@ export class WaitingRoomComponent implements OnInit {
         this.toastr.success(`${data.userName} has Joined the game!`, 'ALERT!');
       }
     });
+
+    this.StartGameResponse().subscribe(data => {
+      console.log(`Game Starting!`);
+      this.router.navigate(['/game', data.gameId]);
+    });
   }
 
   joinGameResponse() {
     return this.socket.fromEvent('joinGame').pipe(map((data: any) => {
+      console.log('joinGame Response Func', data);
+      if (data.status !== 'success') {
+        console.log('Game Join Failed!!!');
+      }
+      this.router.navigate(['game', data.gameId]);
+      return data;
+    }));
+  }
+
+  StartGameResponse() {
+    return this.socket.fromEvent('startGame').pipe(map((data: any) => {
       if (data.status !== 'success') {
         console.log('Game Join Failed!!!');
       }
       return data;
     }));
+  }
+
+  startGame() {
+    console.log('starting game...');
+    this.socket.emit('startGame', { gameId: this.gameId });
   }
 
   ngOnInit(): void {

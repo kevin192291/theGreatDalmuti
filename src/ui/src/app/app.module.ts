@@ -8,12 +8,20 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { ToastrModule } from 'ngx-toastr';
+import { GameComponent } from './game/game.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { EulaComponent } from './eula/eula.component';
+
+import { MatCardModule } from '@angular/material/card';
 
 const config: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    GameComponent,
+    PageNotFoundComponent,
+    EulaComponent
   ],
   imports: [
     BrowserModule,
@@ -21,6 +29,8 @@ const config: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
     BrowserAnimationsModule,
     SocketIoModule.forRoot(config),
     ToastrModule.forRoot(), // ToastrModule added
+
+    MatCardModule,    
   ],
   providers: [],
   bootstrap: [AppComponent]
