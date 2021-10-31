@@ -6,13 +6,15 @@ import { CreateGameComponent } from './create-game/create-game.component';
 import { ListGamesComponent } from './list-games/list-games.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
+import { JoinGameComponent } from './join-game/join-game.component';
 
 
 @NgModule({
   declarations: [
     CreateGameComponent,
     ListGamesComponent,
-    WaitingRoomComponent
+    WaitingRoomComponent,
+    JoinGameComponent
   ],
   imports: [
     CommonModule,

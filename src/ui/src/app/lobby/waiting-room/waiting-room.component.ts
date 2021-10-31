@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Socket } from 'ngx-socket-io';
 import { map } from 'rxjs/operators';
 
 @Component({
@@ -10,8 +11,11 @@ import { map } from 'rxjs/operators';
 export class WaitingRoomComponent implements OnInit {
 
   public gameId: string = '';
+  public numberOfPlayers: number = 0;
 
   constructor(
+    private socket: Socket,
+    private router: Router,
     private route: ActivatedRoute,
   ) {
     // this.route.params.pipe(map(params => {
@@ -21,6 +25,22 @@ export class WaitingRoomComponent implements OnInit {
     this.route.queryParams.pipe(map(params => {
       console.log(params);
       this.gameId = params.gameId
+    }));
+
+    this.joinGameResponse().subscribe(data => {
+      if (data.status === 'success') {
+        console.log(`${data.userName} has Joined the game`);
+        this.numberOfPlayers = data.numberOfPlayers;
+      }
+    });
+  }
+
+  joinGameResponse() {
+    return this.socket.fromEvent('joinGame').pipe(map((data: any) => {
+      if (data.status !== 'success') {
+        console.log('Game Join Failed!!!');
+      }
+      return data;
     }));
   }
 
