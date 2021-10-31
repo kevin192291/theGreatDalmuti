@@ -15,36 +15,52 @@ let http = require("http").Server(app);
 let io = require("socket.io")(http);
 
 app.get("/", (req: any, res: any) => {
-  res.sendFile(path.resolve("./src/game.html"));
+  res.sendFile(path.resolve("./dist/ui/index.html"));
+});
+
+app.get("/*", (req: any, res: any) => {
+  res.sendFile(path.resolve("./dist/ui/" + req.params[0]));
 });
 
 // whenever a user connects on port 3000 via
 // a websocket, log that a user has connected
-io.on("connection", function(socket: socketio.Socket) {
+io.on("connection", function (socket: socketio.Socket) {
   console.log("a user connected");
   // whenever we receive a 'message' we log it out
-  socket.on("message", function(message: any) {
-    console.log('incoming:', [message, socket]);
-    const action = message.action;
-    switch(action) {
-      case 1:
-        const game = new Game([new Player(socket.client['id'])], new Deck());
-        active_games.push(game);
-        socket.send({gameId: game.getGameId()});
-        socket.join('kevin');
-        break;
-      case 2:
-        const gameId = message.payload.id;
-        const player = new Player(socket.client['id']);
-        active_games.filter(game => game.getGameId() === gameId)[0].addPlayer(player);
-        socket.join('kevin');
-        socket.send({gameId: gameId});
-        socket.in('kevin').emit(player.id + ' joined the lobby');
-        break;
+
+  socket.on("gameLobby", function (message: any) {
+    console.log(message);
+    socket.emit('createGame', {
+      active_games: active_games.filter(game => game.isPublic),
+    });
+  });
+
+  socket.on("createGame", function (message: any) {
+    console.log(message);
+
+    if (active_games.filter(games => games.getPlayerById(socket.client['id']) !== null).length > 0) {
+      socket.emit('createGame', {
+        status: 'error',
+        error: "You are already in a game.",
+        gameId: active_games.filter(games => games.getPlayerById(socket.client['id']) !== null)[0].getGameId(),
+      });
+      return;
+    } else {
+      const game = new Game([new Player(socket.client['id'], message.userName)], new Deck());
+      active_games.push(game);
+      socket.join(game.getGameId());
+      socket.emit('createGame', {
+        status: 'success',
+        gameId: game.getGameId(),
+        userName: message.userName,
+      });
     }
   });
+
+
 });
 
-const server = http.listen(3001, function() {
+
+const server = http.listen(3001, function () {
   console.log("listening on *:3001");
 });

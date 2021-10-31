@@ -4,6 +4,7 @@ import { Player } from './player';
 
 
 export class Game {
+  public isPublic: boolean;
   private id: string = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     var r = Math.random() * 16 | 0,
       v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -12,9 +13,10 @@ export class Game {
   private players: Player[];
   private deck: Deck;
 
-  constructor(players: Player[], deck: Deck) {
+  constructor(players: Player[], deck: Deck, isPublic: boolean = true) {
     this.players = players;
     this.deck = deck;
+    this.isPublic = isPublic;
 
     // Generate Deck:
     for (let cardNumber = 12; cardNumber >= 0; cardNumber--) {
