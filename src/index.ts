@@ -29,6 +29,13 @@ io.on("connection", (socket: socketio.Socket) => {
   console.log("a user connected");
   // whenever we receive a 'message' we log it out
 
+  socket.on('disconnect', () => {
+    console.log('a user disconnected!');
+    const disconnectedPlayer: Player = active_games.filter(games => games.getPlayerById(socket.id) !== null)[0].getPlayerById(socket.id);
+    active_games.filter(games => games.getPlayerById(socket.id) !== null)[0].removePlayer(disconnectedPlayer);
+    io.emit('playerDisconnected', disconnectedPlayer);
+  });
+
   socket.on("gameLobby", (message: any) => {
     console.log(message);
     socket.emit('createGame', {
@@ -77,6 +84,7 @@ io.on("connection", (socket: socketio.Socket) => {
       game.addPlayer(new Player(socket.id, message.userName));
       io.to(game.getGameId()).emit('joinGame', {
         status: 'success',
+        event: 'joinGame',
         userName: message.userName,
         gameId: game.getGameId(),
         numberOfPlayers: io.sockets.adapter.rooms.get(game.getGameId()).size,
@@ -99,6 +107,7 @@ io.on("connection", (socket: socketio.Socket) => {
         if (playerSocket) {
           playerSocket.client['sockets'].get(player.id).emit('startGame', {
             status: 'success',
+            event: 'startGame',
             gameId: game.getGameId(),
             userName: player.userName,
           });
@@ -113,6 +122,6 @@ io.on("connection", (socket: socketio.Socket) => {
 });
 
 
-const server = httpServer.listen(3001, function () {
+httpServer.listen(3001, function () {
   console.log("listening on *:3001");
 });

@@ -31,7 +31,7 @@ export class WaitingRoomComponent implements OnInit {
     }));
 
     this.joinGameResponse().subscribe(data => {
-      if (data.status === 'success') {
+      if (data.status === 'success' && data.event === 'joinGame') {
         console.log(`${data.userName} has Joined the game`);
         this.numberOfPlayers = data.numberOfPlayers;
         this.toastr.success(`${data.userName} has Joined the game!`, 'ALERT!');
@@ -39,8 +39,11 @@ export class WaitingRoomComponent implements OnInit {
     });
 
     this.StartGameResponse().subscribe(data => {
-      console.log(`Game Starting!`);
-      this.router.navigate(['/game', data.gameId]);
+      if (data.status === 'success' && data.event === 'startGame') {
+        console.log(`Game Started!`, data);
+        this.toastr.success(`Game Started!`, 'ALERT!');
+        this.router.navigate(['game', data.gameId]);
+      }
     });
   }
 
@@ -50,7 +53,6 @@ export class WaitingRoomComponent implements OnInit {
       if (data.status !== 'success') {
         console.log('Game Join Failed!!!');
       }
-      this.router.navigate(['game', data.gameId]);
       return data;
     }));
   }

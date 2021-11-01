@@ -55,4 +55,8 @@ export class Game {
   public getAllPlayers() {
     return this.players;
   }
+
+  public removePlayer(player: Player) {
+    return this.players.splice(this.players.indexOf(player), 1);
+  }
 }
