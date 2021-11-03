@@ -16,7 +16,7 @@ import { NgxsModule } from '@ngxs/store';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { MatCardModule } from '@angular/material/card';
 import { environment } from 'src/environments/environment';
-import { GameState } from './services/game-state';
+import { GameState } from './services/game.state';
 
 const config: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
 
@@ -33,9 +33,10 @@ const config: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
     BrowserAnimationsModule,
     SocketIoModule.forRoot(config),
     ToastrModule.forRoot(), // ToastrModule added
-    // NgxsModule.forRoot([GameState], {
-    //   developmentMode: !environment.production
-    // }),
+    NgxsModule.forRoot([GameState], {
+      developmentMode: !environment.production
+    }),
+    NgxsReduxDevtoolsPluginModule.forRoot(),
 
     MatCardModule,    
   ],
