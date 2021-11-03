@@ -8,6 +8,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { WaitingRoomComponent } from './waiting-room/waiting-room.component';
 import { JoinGameComponent } from './join-game/join-game.component';
 
+import { MatCardModule } from '@angular/material/card';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 @NgModule({
   declarations: [
@@ -21,6 +23,8 @@ import { JoinGameComponent } from './join-game/join-game.component';
     LobbyRoutingModule,
     ReactiveFormsModule,
     FormsModule,
+    ClipboardModule,
+    MatCardModule,
   ]
 })
 export class LobbyModule { }

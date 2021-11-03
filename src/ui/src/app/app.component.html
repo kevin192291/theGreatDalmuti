@@ -1,4 +1,22 @@
-<button routerLink="/lobby">Lobby</button>
-<button routerLink="/lobby/create">Lobby -> Create Game</button>
-<button routerLink="/lobby/join">Lobby -> Join Game</button>
+<mat-toolbar color="primary">
+  <button mat-icon-button class="example-icon" aria-label="Example icon-button with menu icon">
+    <mat-icon>menu</mat-icon>
+  </button>
+  <span>My App</span>
+  <span class="example-spacer"></span>
+
+  <button mat-button routerLink="/lobby" class="example-icon" aria-label="Example icon-button with share icon">
+    Lobby
+  </button>
+
+  <button mat-button routerLink="/lobby/create" class="example-icon" aria-label="Example icon-button with share icon">
+    Create Game
+  </button>
+
+  <button mat-button routerLink="/lobby/join" class="example-icon" aria-label="Example icon-button with share icon">
+    Join Game
+  </button>
+
+</mat-toolbar>
+
 <router-outlet></router-outlet>

@@ -23,6 +23,8 @@ app.get("/*", (req: any, res: any) => {
   res.sendFile(path.resolve("./dist/ui/" + req.params[0]));
 });
 
+
+
 // whenever a user connects on port 3000 via
 // a websocket, log that a user has connected
 io.on("connection", (socket: socketio.Socket) => {
@@ -31,9 +33,14 @@ io.on("connection", (socket: socketio.Socket) => {
 
   socket.on('disconnect', () => {
     console.log('a user disconnected!');
-    const disconnectedPlayer: Player = active_games.filter(games => games.getPlayerById(socket.id) !== null)[0].getPlayerById(socket.id);
-    active_games.filter(games => games.getPlayerById(socket.id) !== null)[0].removePlayer(disconnectedPlayer);
-    io.emit('playerDisconnected', disconnectedPlayer);
+    const disconnectedPlayer: Game[] = active_games.filter(games => games.getPlayerById(socket.id) !== null);
+    if (disconnectedPlayer.length > 0) {
+      const player: Player = disconnectedPlayer[0].getPlayerById(socket.id);
+      if (player) {
+        active_games.filter(games => games.getPlayerById(socket.id) !== null)[0].removePlayer(player);
+        io.emit('playerDisconnected', disconnectedPlayer);
+      }
+    }
   });
 
   socket.on("gameLobby", (message: any) => {
@@ -87,7 +94,18 @@ io.on("connection", (socket: socketio.Socket) => {
         event: 'joinGame',
         userName: message.userName,
         gameId: game.getGameId(),
-        numberOfPlayers: io.sockets.adapter.rooms.get(game.getGameId()).size,
+        numberOfPlayers: game.getAllPlayers().length,
+      });
+    }
+  });
+
+  socket.on("getUsersInRoom", (message: any) => {
+    const game: Game = active_games.filter(game => game.getGameId() === message.gameId)[0];
+    if (game) {
+      io.to(socket.id).emit('joinGame', {
+        status: 'success',
+        event: 'getUsersInRoom',
+        players: game.getAllPlayers(),
       });
     }
   });

@@ -12,9 +12,18 @@ export class AppComponent {
   title = 'ui';
 
   constructor(private socket: Socket, private toastr: ToastrService,) {
+  }
+  
+  ngOnInit() {
     this.socket.fromEvent('playerDisconnected').pipe(map((data: any) => {
       console.log(data);
       this.toastr.error(data.userName + ' has disconnected!');
     })).subscribe();
+
+    this.socket.fromEvent('playerConnected').pipe(map((data: any) => {
+      console.log(data);
+      this.toastr.success(data.userName + ' has connected!');
+    })).subscribe();
+
   }
 }

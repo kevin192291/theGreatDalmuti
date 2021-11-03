@@ -18,6 +18,10 @@ import { MatCardModule } from '@angular/material/card';
 import { environment } from 'src/environments/environment';
 import { GameState } from './services/game.state';
 
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+
 const config: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
 
 @NgModule({
@@ -38,7 +42,10 @@ const config: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
     }),
     NgxsReduxDevtoolsPluginModule.forRoot(),
 
-    MatCardModule,    
+    MatCardModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,6 +1,6 @@
 <h1>Welcome to the Game</h1>
 <p>
-    Please share the ID: {{ gameId }} with others, and wait for them to join!
+    Please share the ID: <i>{{ gameId }} <button [cdkCopyToClipboard]="gameId" [cdkCopyToClipboardAttempts]="5">📋</button></i> with others, and wait for them to join!
 </p>
 <p>
 <small>
@@ -11,6 +11,13 @@
 </p>
 <h2>Good Luck<i>!</i></h2>
 <hr>
-<h2>Players that have Joined: {{ numberOfPlayers }} {{ numberOfPlayers === 1 ? '(you)' : '' }}</h2>
+<h2>Players that have Joined: {{ (numberOfPlayers$ | async) }} {{ (numberOfPlayers$ | async) === 1 ? '(you)' : '' }}</h2>
 
-<button (click)="startGame()" [disabled]="numberOfPlayers <= 2 || gameId === ''">Start Game</button>
+<button (click)="startGame()" [disabled]="((numberOfPlayers$ | async) || 0) <= 2 || gameId === ''">Start Game</button>
+
+<div>
+    <h2>Players:</h2>
+    <mat-card *ngFor="let player of (players$ | async)">
+        <mat-card-title>{{ player.userName }}</mat-card-title>
+    </mat-card>
+</div>

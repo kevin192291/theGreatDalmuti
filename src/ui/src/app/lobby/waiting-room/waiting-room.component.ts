@@ -3,6 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Socket } from 'ngx-socket-io';
 import { map } from 'rxjs/operators';
 import { ToastrService } from 'ngx-toastr';
+import { Select, Store } from '@ngxs/store';
+import { JoinGame } from 'src/app/services/game.actions';
+import { Player } from '../../../../../game/player';
+import { GameStateModel } from 'src/app/services/game.model';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-waiting-room',
@@ -12,14 +17,21 @@ import { ToastrService } from 'ngx-toastr';
 export class WaitingRoomComponent implements OnInit {
 
   public gameId: string = '';
-  public numberOfPlayers: number = 1;
+  public numberOfPlayers: number = 0;
+  numberOfPlayers$: Observable<number>;
+  players$: Observable<Player[]>;
 
   constructor(
     private socket: Socket,
     private router: Router,
     private route: ActivatedRoute,
     private toastr: ToastrService,
+    private store: Store
   ) {
+
+    this.numberOfPlayers$ = this.store.select(state => state.game.numberOfPlayers);
+    this.players$ = this.store.select(state => state.game.players);
+
     this.gameId = this.route.snapshot.params.gameId;
     // this.route.params.pipe(map(params => {
     //   console.log('params', params);
@@ -30,13 +42,15 @@ export class WaitingRoomComponent implements OnInit {
       this.numberOfPlayers = params.numberOfPlayers;
     }));
 
-    this.joinGameResponse().subscribe(data => {
-      if (data.status === 'success' && data.event === 'joinGame') {
+    this.socket.fromEvent('joinGame').pipe(map((data: any) => {
+      console.log('joinGame Response Func', data);
+      if (data.status === 'success') {
         console.log(`${data.userName} has Joined the game`);
-        this.numberOfPlayers = data.numberOfPlayers;
+        this.store.dispatch(new JoinGame(new Player('', data.userName), data.numberOfPlayers));
         this.toastr.success(`${data.userName} has Joined the game!`, 'ALERT!');
       }
-    });
+      return data;
+    })).subscribe();
 
     this.StartGameResponse().subscribe(data => {
       if (data.status === 'success' && data.event === 'startGame') {
@@ -45,16 +59,6 @@ export class WaitingRoomComponent implements OnInit {
         this.router.navigate(['game', data.gameId]);
       }
     });
-  }
-
-  joinGameResponse() {
-    return this.socket.fromEvent('joinGame').pipe(map((data: any) => {
-      console.log('joinGame Response Func', data);
-      if (data.status !== 'success') {
-        console.log('Game Join Failed!!!');
-      }
-      return data;
-    }));
   }
 
   StartGameResponse() {
