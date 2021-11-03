@@ -12,7 +12,11 @@ import { GameComponent } from './game/game.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 import { EulaComponent } from './eula/eula.component';
 
+import { NgxsModule } from '@ngxs/store';
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { MatCardModule } from '@angular/material/card';
+import { environment } from 'src/environments/environment';
+import { GameState } from './services/game-state';
 
 const config: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
 
@@ -29,6 +33,9 @@ const config: SocketIoConfig = { url: 'http://localhost:3001', options: {} };
     BrowserAnimationsModule,
     SocketIoModule.forRoot(config),
     ToastrModule.forRoot(), // ToastrModule added
+    // NgxsModule.forRoot([GameState], {
+    //   developmentMode: !environment.production
+    // }),
 
     MatCardModule,    
   ],

@@ -10,7 +10,6 @@
     "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript, Node\" -c \"yello.bold, cyan.bold\" \"yarn run watch-ts\" \"yarn run watch-node\"",
     "test": "mocha -r ts-node/register src/**/*.spec.ts",
     "compile": "rm -r bin/ ; tsc",
-
     "dev": "svelte-kit dev",
     "build-sv": "svelte-kit build",
     "preview": "svelte-kit preview",
@@ -22,9 +21,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "ts-node": "^10.4.0",
-    "typescript": "^4.4.4",
-
     "@sveltejs/kit": "next",
     "@types/cookie": "^0.4.1",
     "prettier": "^2.4.1",
@@ -32,14 +28,18 @@
     "svelte": "^3.34.0",
     "svelte-check": "^2.2.6",
     "svelte-preprocess": "^4.9.4",
-    "tslib": "^2.3.1"
+    "ts-node": "^10.4.0",
+    "tslib": "^2.3.1",
+    "typescript": "^4.4.4"
   },
   "dependencies": {
-    "express": "^4.17.1",
-    "socket.io": "^4.3.1",
-    "ws": "^8.2.3",
     "@fontsource/fira-mono": "^4.5.0",
     "@lukeed/uuid": "^2.0.0",
-    "cookie": "^0.4.1"
+    "@ngxs/devtools-plugin": "^3.7.2",
+    "@ngxs/store": "^3.7.2",
+    "cookie": "^0.4.1",
+    "express": "^4.17.1",
+    "socket.io": "^4.3.1",
+    "ws": "^8.2.3"
   }
 }
